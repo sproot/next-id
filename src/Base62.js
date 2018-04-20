@@ -30,10 +30,8 @@ class Base62 {
 
   _normalizeNumber(number) {
     switch (typeof number) {
-      case 'number':
-        return Long.fromNumber(number);
-      case 'string':
-        return Long.fromString(number, true);
+      case 'number': return Long.fromNumber(number);
+      case 'string': return Long.fromString(number, true);
     }
   }
 }

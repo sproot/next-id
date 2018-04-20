@@ -1,5 +1,6 @@
 const Long = require('long');
 const NextId = require('../src/NextId');
+const Base62 = require('../src/Base62');
 
 describe('nextId', () => {
   const timeNow = new Date();
@@ -19,6 +20,18 @@ describe('nextId', () => {
     expect(NextId.EPOCH).toEqual(
       new Date('Sep 8 2017 10:30 GMT+0300').getTime()
     );
+  });
+
+  describe('base62 encoder', () => {
+    it('assigns Base62 class as default encoder', () => {
+      nextId = new NextId();
+      expect(nextId.base62 instanceof Base62).toBe(true);
+    });
+
+    it('has setBase62Encoder method', () => {
+      expect(nextId.setBase62Encoder('B62ENC')).toBe(nextId);
+      expect(nextId.base62).toEqual('B62ENC');
+    });
   });
 
   describe('setShardId', () => {
@@ -158,15 +171,36 @@ describe('nextId', () => {
     });
   });
 
-  describe('nextId(number)', () => {
-    it('returns uniq id as Long number', () => {
-      spyOn(nextId, 'pseudoEncrypt').and.returnValue('PSEUDO_NUMBER');
+  describe('nextId(type)', () => {
+    beforeEach(() => {
       spyOn(nextId, 'instId').and.returnValue('INST_ID');
+      spyOn(nextId, 'pseudoEncrypt').and.returnValue('PSEUDO_NUMBER');
+    });
 
+    it('nextId(number) returns uniq id as Long number', () => {
       const id = nextId.nextId('number');
-
       expect(nextId.pseudoEncrypt).toHaveBeenCalledWith('INST_ID');
       expect(id).toBe('PSEUDO_NUMBER');
+    });
+
+    describe('nextId(base62)', () => {
+      const base62 = jasmine.createSpyObj('base62', ['encode']);
+
+      beforeEach(() => {
+        nextId.setBase62Encoder(base62);
+        base62.encode.and.returnValue('BASE62_STRING');
+      });
+
+      it('returns uniq id as base62 encoded string', () => {
+        const id = nextId.nextId('base62');
+        expect(base62.encode).toHaveBeenCalledWith('PSEUDO_NUMBER');
+        expect(id).toBe('BASE62_STRING');
+      });
+
+      it('is used by default', () => {
+        const id = nextId.nextId();
+        expect(id).toBe('BASE62_STRING');
+      });
     });
   });
 });

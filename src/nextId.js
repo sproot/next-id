@@ -1,4 +1,5 @@
 const Long = require('long');
+const Base62 = require('./Base62');
 
 class NextId {
   static get EPOCH() {
@@ -20,6 +21,16 @@ class NextId {
   get shardId() {
     if(!this._shardId) this._shardId = 0;
     return this._shardId;
+  }
+
+  setBase62Encoder(base62) {
+    this._base62 = base62;
+    return this;
+  }
+
+  get base62() {
+    if(!this._base62) this._base62 = new Base62();
+    return this._base62;
   }
 
   instId() {
@@ -48,12 +59,11 @@ class NextId {
   }
 
   nextId(type) {
-    if(!type) type = 'number';
+    if(!type) type = 'base62';
     const id = this.pseudoEncrypt(this.instId());
     switch (type) {
-      case 'number':
-        return id;
-        break;
+      case 'number': return id;
+      case 'base62': return this.base62.encode(id);
     }
   }
 }
