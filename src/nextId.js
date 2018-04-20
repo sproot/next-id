@@ -66,6 +66,27 @@ class NextId {
       case 'base62': return this.base62.encode(id);
     }
   }
+
+  inspectId(id) {
+    if(id.length <= 11) id = this.base62.decode(id);
+    id = this.pseudoEncrypt(id);
+    const timestamp = this._getTimestamp(id);
+    return {
+      shardId: this._getShardId(id),
+      timestamp: timestamp,
+      createdAt: NextId.EPOCH + timestamp,
+    };
+  }
+
+  _getTimestamp(id) {
+    return id.shiftRight(23).toNumber();
+  }
+
+  _getShardId(id) {
+    return id.xor(
+      id.shiftRight(23).shiftLeft(23)
+    ).shiftRight(10).toNumber();
+  }
 }
 
 module.exports = NextId;

@@ -32,6 +32,7 @@ class Base62 {
     switch (typeof number) {
       case 'number': return Long.fromNumber(number);
       case 'string': return Long.fromString(number, true);
+      default: return number;
     }
   }
 }

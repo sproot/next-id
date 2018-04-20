@@ -203,4 +203,28 @@ describe('nextId', () => {
       });
     });
   });
+
+  describe('inspectId(id)', () => {
+    it('retrieves usefull info from id', () => {
+      nextId.setShardId(133);
+      expect(
+        nextId.inspectId(nextId.nextId())
+      ).toEqual({
+        shardId: 133,
+        timestamp: timeNow.getTime() - NextId.EPOCH,
+        createdAt: timeNow.getTime()
+      });
+    });
+
+    it('retrieves usefull info from number id', () => {
+      nextId.setShardId(1221);
+      expect(
+        nextId.inspectId(nextId.nextId('number'))
+      ).toEqual({
+        shardId: 1221,
+        timestamp: timeNow.getTime() - NextId.EPOCH,
+        createdAt: timeNow.getTime()
+      });
+    })
+  });
 });
