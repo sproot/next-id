@@ -1,5 +1,6 @@
 const Long = require('long');
 const Base62 = require('../src/Base62');
+const Pseudo = require('../src/Pseudo');
 
 const NextIdGenerator = require('../src/NextIdGenerator');
 
@@ -108,12 +109,12 @@ describe('NextIdGenerator', () => {
   describe('nextId(type)', () => {
     beforeEach(() => {
       spyOn(generator, 'generateNumberId').and.returnValue('INST_ID');
-      spyOn(generator, 'pseudoEncrypt').and.returnValue('PSEUDO_NUMBER');
+      spyOn(Pseudo, 'encrypt').and.returnValue('PSEUDO_NUMBER');
     });
 
     it('nextId(number) returns uniq id as Long number', () => {
       const id = generator.generateId('number');
-      expect(generator.pseudoEncrypt).toHaveBeenCalledWith('INST_ID');
+      expect(Pseudo.encrypt).toHaveBeenCalledWith('INST_ID');
       expect(id).toBe('PSEUDO_NUMBER');
     });
 
