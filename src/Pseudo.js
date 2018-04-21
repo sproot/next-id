@@ -7,7 +7,7 @@ class Pseudo {
         number = Long.fromNumber(number);
         break;
       case 'string':
-        number = Long.fromString(number);
+        number = Long.fromString(number, true);
         break;
     }
 

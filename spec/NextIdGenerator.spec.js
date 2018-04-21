@@ -1,4 +1,7 @@
 const Long = require('long');
+const EPOCH = require('../config/epoch');
+const { getTimestamp, getShardId, getLastTenBits } = require('./support/helpers');
+
 const NextIdGenerator = require('../src/NextIdGenerator');
 
 describe('NextIdGenerator', () => {
@@ -13,14 +16,6 @@ describe('NextIdGenerator', () => {
 
   afterEach(() => {
     jasmine.clock().uninstall();
-  });
-
-  describe('EPOCH', () => {
-    it('sets epoch to Sep 8 2017 10:30 GMT+0300 in milliseconds', () => {
-      expect(NextIdGenerator.EPOCH).toEqual(
-        new Date('Sep 8 2017 10:30 GMT+0300').getTime()
-      );
-    });
   });
 
   describe('static setShardId', () => {
@@ -65,26 +60,11 @@ describe('NextIdGenerator', () => {
   });
 
   describe('generateId()', () => {
-    // 64 bits total, 41 occupied by timestamp
-    const timeShift = 64-41;
-    // last 10 bits used for counter value from 0 to 1023
-    const countShift = 10;
-
-    function getShardId(id) {
-      return id.xor(
-        id.shiftRight(timeShift).shiftLeft(timeShift)
-      ).shiftRight(countShift).toNumber();
-    }
-
-    function getLastTenBits(id) {
-      return id.and(Long.ONE.shiftLeft(countShift)-Long.ONE);
-    }
-
     it ('holds time since epoch in milliseconds as first 41 bits', () => {
       expect(
-        generator.generateId().shiftRight(timeShift).toNumber()
+        getTimestamp(generator.generateId())
       ).toEqual(
-        timeNow.getTime() - NextIdGenerator.EPOCH
+        timeNow.getTime() - EPOCH
       );
     });
 
@@ -101,27 +81,5 @@ describe('NextIdGenerator', () => {
       expect(lastBits).toBeGreaterThan(-1);
       expect(lastBits).toBeLessThan(1024);
     });
-  });
-
-  describe('inspectId(id)', () => {
-    it('retrieves usefull info from id', () => {
-      generator.setShardId(133);
-      expect(
-        generator.inspectId(generator.generateId())
-      ).toEqual({
-        shardId: 133,
-        issuedAt: timeNow
-      });
-    });
-
-    it('retrieves usefull info from number id', () => {
-      generator.setShardId(1221);
-      expect(
-        generator.inspectId(generator.generateId('number'))
-      ).toEqual({
-        shardId: 1221,
-        issuedAt: timeNow
-      });
-    })
   });
 });

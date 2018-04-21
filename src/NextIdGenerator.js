@@ -1,9 +1,8 @@
 const Long = require('long');
+const EPOCH = require('../config/epoch');
+const NextId = require('./NextId');
 
 class NextIdGenerator {
-  static get EPOCH() {
-    return new Date('Sep 8 2017 10:30 GMT+0300').getTime();
-  }
 
   constructor() {
     this.sequence = 0;
@@ -23,33 +22,16 @@ class NextIdGenerator {
   }
 
   generateId() {
-    let result = Long.fromNumber(new Date().getTime() - NextIdGenerator.EPOCH, true);
+    let result = Long.fromNumber(new Date().getTime() - EPOCH, true);
     result = result.shiftLeft(23);
     result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
     result = result.or(Long.fromNumber(this.sequence % 1024));
     this.sequence++;
-    return result;
+    return result
   }
 
-  inspectId(id) {
-    return {
-      shardId: this._extractShardId(id),
-      issuedAt: this._extractIssuedAt(id)
-    }
-  }
-
-  _extractShardId(id) {
-    return id.xor(
-      id.shiftRight(23).shiftLeft(23)
-    ).shiftRight(10).toNumber();
-  }
-
-  _extractIssuedAt(id) {
-    return new Date(NextIdGenerator.EPOCH + this._extractTimestamp(id));
-  }
-
-  _extractTimestamp(id) {
-    return id.shiftRight(23).toNumber();
+  getNextId() {
+    return new NextId(this._generateId());
   }
 }
 
