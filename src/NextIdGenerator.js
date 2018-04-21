@@ -31,7 +31,7 @@ class NextIdGenerator {
   }
 
   getNextId() {
-    return new NextId(this._generateId());
+    return new NextId(this.generateId());
   }
 }
 

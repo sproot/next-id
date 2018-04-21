@@ -82,4 +82,12 @@ describe('NextIdGenerator', () => {
       expect(lastBits).toBeLessThan(1024);
     });
   });
+
+  describe('getNextId()', () => {
+    it('wraps generatedId to a NextId instance', () => {
+      spyOn(generator, 'generateId').and.returnValue('GENERATED_ID');
+      generator.getNextId()
+      expect(generator.generateId).toHaveBeenCalled();
+    });
+  });
 });
