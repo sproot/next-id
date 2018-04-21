@@ -1,7 +1,4 @@
 const Long = require('long');
-const Base62 = require('../src/Base62');
-const Pseudo = require('../src/Pseudo');
-
 const NextIdGenerator = require('../src/NextIdGenerator');
 
 describe('NextIdGenerator', () => {
@@ -60,14 +57,14 @@ describe('NextIdGenerator', () => {
     });
 
     it('gets incremented by each nextId() call', () => {
-      generator.generateNumberId();
+      generator.generateId();
       expect(generator.sequence).toBe(1);
-      generator.generateNumberId();
+      generator.generateId();
       expect(generator.sequence).toBe(2);
     });
   });
 
-  describe('generateNumberId()', () => {
+  describe('generateId()', () => {
     // 64 bits total, 41 occupied by timestamp
     const timeShift = 64-41;
     // last 10 bits used for counter value from 0 to 1023
@@ -85,7 +82,7 @@ describe('NextIdGenerator', () => {
 
     it ('holds time since epoch in milliseconds as first 41 bits', () => {
       expect(
-        generator.generateNumberId().shiftRight(timeShift).toNumber()
+        generator.generateId().shiftRight(timeShift).toNumber()
       ).toEqual(
         timeNow.getTime() - NextIdGenerator.EPOCH
       );
@@ -93,41 +90,16 @@ describe('NextIdGenerator', () => {
 
     it('uses next 13 bits for shardId giving 8191 possible shards', () => {
       generator.setShardId(8191);
-      expect(getShardId(generator.generateNumberId())).toEqual(8191);
+      expect(getShardId(generator.generateId())).toEqual(8191);
 
       generator.setShardId(13);
-      expect(getShardId(generator.generateNumberId())).toEqual(13);
+      expect(getShardId(generator.generateId())).toEqual(13);
     });
 
     it('uses last 10 bits as sequential counter', () => {
-      const lastBits = getLastTenBits(generator.generateNumberId());
+      const lastBits = getLastTenBits(generator.generateId());
       expect(lastBits).toBeGreaterThan(-1);
       expect(lastBits).toBeLessThan(1024);
-    });
-  });
-
-  describe('nextId(type)', () => {
-    beforeEach(() => {
-      spyOn(generator, 'generateNumberId').and.returnValue('INST_ID');
-      spyOn(Pseudo, 'encrypt').and.returnValue('PSEUDO_NUMBER');
-    });
-
-    it('nextId(number) returns uniq id as Long number', () => {
-      const id = generator.generateId('number');
-      expect(Pseudo.encrypt).toHaveBeenCalledWith('INST_ID');
-      expect(id).toBe('PSEUDO_NUMBER');
-    });
-
-    describe('nextId(base62)', () => {
-      beforeEach(() => {
-        spyOn(Base62, 'encode').and.returnValue('BASE62_STRING');
-      });
-
-      it('returns uniq id as base62 encoded string', () => {
-        const id = generator.generateId('base62');
-        expect(Base62.encode).toHaveBeenCalledWith('PSEUDO_NUMBER');
-        expect(id).toBe('BASE62_STRING');
-      });
     });
   });
 
@@ -138,8 +110,7 @@ describe('NextIdGenerator', () => {
         generator.inspectId(generator.generateId())
       ).toEqual({
         shardId: 133,
-        timestamp: timeNow.getTime() - NextIdGenerator.EPOCH,
-        createdAt: timeNow.getTime()
+        issuedAt: timeNow
       });
     });
 
@@ -149,8 +120,7 @@ describe('NextIdGenerator', () => {
         generator.inspectId(generator.generateId('number'))
       ).toEqual({
         shardId: 1221,
-        timestamp: timeNow.getTime() - NextIdGenerator.EPOCH,
-        createdAt: timeNow.getTime()
+        issuedAt: timeNow
       });
     })
   });

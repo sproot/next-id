@@ -1,6 +1,4 @@
 const Long = require('long');
-const Base62 = require('./Base62');
-const Pseudo = require('./Pseudo');
 
 class NextIdGenerator {
   static get EPOCH() {
@@ -24,7 +22,7 @@ class NextIdGenerator {
     return this._shardId;
   }
 
-  generateNumberId() {
+  generateId() {
     let result = Long.fromNumber(new Date().getTime() - NextIdGenerator.EPOCH, true);
     result = result.shiftLeft(23);
     result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
@@ -33,41 +31,25 @@ class NextIdGenerator {
     return result;
   }
 
-  generatePseudoId() {
-    return Pseudo.encrypt(this.generateNumberId());
-  }
-
-  generateBase62Id() {
-    return Base62.encode(this.generatePseudoId());
-  }
-
-  generateId(type) {
-    if(!type) type = 'base62';
-    switch (type) {
-      case 'number': return this.generatePseudoId();
-      case 'base62': return this.generateBase62Id();
+  inspectId(id) {
+    return {
+      shardId: this._extractShardId(id),
+      issuedAt: this._extractIssuedAt(id)
     }
   }
 
-  inspectId(id) {
-    if(id.length <= 11) id = Base62.decode(id);
-    id = Pseudo.encrypt(id);
-    const timestamp = this._getTimestamp(id);
-    return {
-      shardId: this._getShardId(id),
-      timestamp: timestamp,
-      createdAt: NextIdGenerator.EPOCH + timestamp,
-    };
-  }
-
-  _getTimestamp(id) {
-    return id.shiftRight(23).toNumber();
-  }
-
-  _getShardId(id) {
+  _extractShardId(id) {
     return id.xor(
       id.shiftRight(23).shiftLeft(23)
     ).shiftRight(10).toNumber();
+  }
+
+  _extractIssuedAt(id) {
+    return new Date(NextIdGenerator.EPOCH + this._extractTimestamp(id));
+  }
+
+  _extractTimestamp(id) {
+    return id.shiftRight(23).toNumber();
   }
 }
 
