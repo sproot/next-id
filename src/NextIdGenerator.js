@@ -1,7 +1,7 @@
 const Long = require('long');
 const Base62 = require('./Base62');
 
-class NextId {
+class NextIdGenerator {
   static get EPOCH() {
     return new Date('Sep 8 2017 10:30 GMT+0300').getTime();
   }
@@ -23,25 +23,6 @@ class NextId {
     return this._shardId;
   }
 
-  setBase62Encoder(base62) {
-    this._base62 = base62;
-    return this;
-  }
-
-  get base62() {
-    if(!this._base62) this._base62 = new Base62();
-    return this._base62;
-  }
-
-  instId() {
-    let result = Long.fromNumber(new Date().getTime() - NextId.EPOCH, true);
-    result = result.shiftLeft(23);
-    result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
-    result = result.or(Long.fromNumber(this.sequence % 1024));
-    this.sequence++;
-    return result;
-  }
-
   pseudoEncrypt(number) {
     const BITMASK = Long.fromNumber(4294967295);
     let l1, l2, r1, r2;
@@ -58,23 +39,39 @@ class NextId {
     return r1.shiftLeft(32).add(l1);
   }
 
-  nextId(type) {
+  generateNumberId() {
+    let result = Long.fromNumber(new Date().getTime() - NextIdGenerator.EPOCH, true);
+    result = result.shiftLeft(23);
+    result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
+    result = result.or(Long.fromNumber(this.sequence % 1024));
+    this.sequence++;
+    return result;
+  }
+
+  generatePseudoId() {
+    return this.pseudoEncrypt(this.generateNumberId());
+  }
+
+  generateBase62Id() {
+    return Base62.encode(this.generatePseudoId());
+  }
+
+  generateId(type) {
     if(!type) type = 'base62';
-    const id = this.pseudoEncrypt(this.instId());
     switch (type) {
-      case 'number': return id;
-      case 'base62': return this.base62.encode(id);
+      case 'number': return this.generatePseudoId();
+      case 'base62': return this.generateBase62Id();
     }
   }
 
   inspectId(id) {
-    if(id.length <= 11) id = this.base62.decode(id);
+    if(id.length <= 11) id = Base62.decode(id);
     id = this.pseudoEncrypt(id);
     const timestamp = this._getTimestamp(id);
     return {
       shardId: this._getShardId(id),
       timestamp: timestamp,
-      createdAt: NextId.EPOCH + timestamp,
+      createdAt: NextIdGenerator.EPOCH + timestamp,
     };
   }
 
@@ -88,5 +85,16 @@ class NextId {
     ).shiftRight(10).toNumber();
   }
 }
+//
+// id: lkpdpkefpep
+// generateNumberId: 39393933939
+// pseudoId: 320023203023023
+// shardId: 3113133123
+// timestamp: 442244424
+// createdAt: date
 
-module.exports = NextId;
+
+// new NextId('320023203023023')
+
+
+module.exports = NextIdGenerator;

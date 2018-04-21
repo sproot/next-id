@@ -5,30 +5,30 @@ class Base62 {
     return '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   }
 
-  get base() {
+  static get base() {
     return Base62.ALPHABET.length;
   }
 
-  encode(number) {
-    number = this._normalizeNumber(number);
+  static encode(number) {
+    number = this.normalizeNumber(number);
     let result = '';
     do {
-      result = Base62.ALPHABET[number.mod(this.base)] + result;
+      result = this.ALPHABET[number.mod(this.base)] + result;
       number = number.div(this.base);
     } while (number > 0);
     return result;
   }
 
-  decode(string) {
+  static decode(string) {
     let result = Long.ZERO;
     for(let i = 0; i < string.length; i++) {
       result = result.multiply(this.base).toUnsigned();
-      result = result.add(Base62.ALPHABET.indexOf(string[i]));
+      result = result.add(this.ALPHABET.indexOf(string[i]));
     }
     return result;
   }
 
-  _normalizeNumber(number) {
+  static normalizeNumber(number) {
     switch (typeof number) {
       case 'number': return Long.fromNumber(number);
       case 'string': return Long.fromString(number, true);
