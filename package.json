@@ -1,6 +1,6 @@
 {
   "name": "@proficonf/next-id",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Short uniq id generator",
   "main": "index.js",
   "scripts": {
