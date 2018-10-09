@@ -1,5 +1,4 @@
 const Long = require('long');
-const EPOCH = require('../config/epoch');
 
 const NextIdGenerator = require('../src/NextIdGenerator');
 const NextId = require('../src/NextId');
@@ -7,13 +6,15 @@ const NextId = require('../src/NextId');
 describe('NextId', () => {
   const timeNow = new Date();
   const ID = '4NDOQTdcN2c';
+  const ALPHANUM = '18NFJ40799O2';
   const NUMBER_ID = Long.fromString('163250664653193266', true);
   const PSEUDO_ID = Long.fromString('4029209053283093212', true);
 
   function assertValidID(id) {
-    expect(id.id).toEqual(ID)
-    expect(id.numberId).toEqual(NUMBER_ID)
-    expect(id.pseudoId).toEqual(PSEUDO_ID)
+    expect(id.id).toEqual(ID);
+    expect(id.numberId).toEqual(NUMBER_ID);
+    expect(id.pseudoId).toEqual(PSEUDO_ID);
+    expect(id.alphanum).toEqual(ALPHANUM);
   }
 
   it('recognizes number id', () => {
@@ -22,6 +23,10 @@ describe('NextId', () => {
 
   it('recognizes base62 encoded id', () => {
     assertValidID(new NextId(ID));
+  });
+
+  it('recognizes base36 encoded id', () => {
+    assertValidID(new NextId(ALPHANUM));
   });
 
   describe('information extraction', () => {

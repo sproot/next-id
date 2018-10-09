@@ -1,14 +1,16 @@
 const EPOCH = require('../config/epoch');
 const Long = require('long');
 const Base62 = require('./Base62');
+const Base36 = require('./Base36');
 const Pseudo = require('./Pseudo');
 
 class NextId {
-  
+
   constructor(id) {
     const numberId = this._getNumberId(id);
     const pseudoId = Pseudo.encrypt(numberId);
     this.id = Base62.encode(pseudoId);
+    this.alphanum = Base36.encode(numberId);
     this.pseudoId = pseudoId;
     this.numberId = numberId;
     this.shardId  = this._extractShardId(numberId);
@@ -18,6 +20,7 @@ class NextId {
   inspect() {
     return {
       id: this.id,
+      alphanum: this.alphanum,
       pseudoId: this.pseudoId.toString(),
       numberId: this.numberId.toString(),
       shardId: this.shardId,
@@ -31,13 +34,17 @@ class NextId {
 
   _getNumberId(id) {
     id = id.toString();
-    return this._isBase62Encoded(id)  ?
-      Pseudo.decrypt(Base62.decode(id)) :
-      Long.fromString(id, true);
+    if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
+    else if (this._isBase36Encoded(id)) return Base36.decode(id);
+    else return Long.fromString(id, true);
   }
 
   _isBase62Encoded(id) {
     return id.length <= 11;
+  }
+
+  _isBase36Encoded(id) {
+    return id.length > 11 && id.length <= 13;
   }
 
   _extractShardId(id) {
