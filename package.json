@@ -1,10 +1,13 @@
 {
   "name": "@proficonf/next-id",
-  "version": "1.2.0",
+  "version": "0.1.0",
   "description": "Short uniq id generator",
+  "private": true,
   "main": "index.js",
   "scripts": {
-    "test": "jasmine --config=jasmine.json"
+    "lint": "echo \"No linter yet\"",
+    "test": "jasmine --config=jasmine.json",
+    "build": "echo \"Build is not needed\""
   },
   "repository": {
     "type": "git",
@@ -17,16 +20,14 @@
     "ID",
     "generator"
   ],
-  "author": "Alexey Kuznetsov",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/proficonf/next-id/issues"
-  },
   "homepage": "https://github.com/proficonf/next-id#readme",
   "devDependencies": {
     "jasmine": "^3.1.0"
   },
   "dependencies": {
     "long": "^4.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
