@@ -2,7 +2,7 @@
   "name": "@proficonf/next-id",
   "version": "0.1.0",
   "description": "Short uniq id generator",
-  "private": true,
+  "license": "UNLICENSED",
   "main": "index.js",
   "scripts": {
     "lint": "echo \"No linter yet\"",
