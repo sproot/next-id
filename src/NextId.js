@@ -6,60 +6,60 @@ const Pseudo = require('./Pseudo');
 
 class NextId {
 
-  constructor(id) {
-    const numberId = this._getNumberId(id);
-    const pseudoId = Pseudo.encrypt(numberId);
-    this.id = Base62.encode(pseudoId);
-    this.alphanum = Base36.encode(numberId);
-    this.pseudoId = pseudoId;
-    this.numberId = numberId;
-    this.shardId  = this._extractShardId(numberId);
-    this.issuedAt = this._extractIssuedAt(numberId);
-  }
-
-  inspect() {
-    return {
-      id: this.id,
-      alphanum: this.alphanum,
-      pseudoId: this.pseudoId.toString(),
-      numberId: this.numberId.toString(),
-      shardId: this.shardId,
-      issuedAt: this.issuedAt,
+    constructor(id) {
+        const numberId = this._getNumberId(id);
+        const pseudoId = Pseudo.encrypt(numberId);
+        this.id = Base62.encode(pseudoId);
+        this.alphanum = Base36.encode(numberId);
+        this.pseudoId = pseudoId;
+        this.numberId = numberId;
+        this.shardId = this._extractShardId(numberId);
+        this.issuedAt = this._extractIssuedAt(numberId);
     }
-  }
 
-  toString() {
-    return this.id;
-  }
+    inspect() {
+        return {
+            id: this.id,
+            alphanum: this.alphanum,
+            pseudoId: this.pseudoId.toString(),
+            numberId: this.numberId.toString(),
+            shardId: this.shardId,
+            issuedAt: this.issuedAt,
+        };
+    }
 
-  _getNumberId(id) {
-    id = id.toString();
-    if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
-    else if (this._isBase36Encoded(id)) return Base36.decode(id);
-    else return Long.fromString(id, true);
-  }
+    toString() {
+        return this.id;
+    }
 
-  _isBase62Encoded(id) {
-    return id.length <= 11;
-  }
+    _getNumberId(id) {
+        id = id.toString();
+        if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
+        else if (this._isBase36Encoded(id)) return Base36.decode(id);
+        else return Long.fromString(id, true);
+    }
 
-  _isBase36Encoded(id) {
-    return id.length > 11 && id.length <= 13;
-  }
+    _isBase62Encoded(id) {
+        return id.length <= 11;
+    }
 
-  _extractShardId(id) {
-    return id.xor(
-      id.shiftRight(23).shiftLeft(23)
-    ).shiftRight(10).toNumber();
-  }
+    _isBase36Encoded(id) {
+        return id.length > 11 && id.length <= 13;
+    }
 
-  _extractIssuedAt(id) {
-    return new Date(EPOCH + this._extractTimestamp(id));
-  }
+    _extractShardId(id) {
+        return id.xor(
+            id.shiftRight(23).shiftLeft(23)
+        ).shiftRight(10).toNumber();
+    }
 
-  _extractTimestamp(id) {
-    return id.shiftRight(23).toNumber();
-  }
+    _extractIssuedAt(id) {
+        return new Date(EPOCH + this._extractTimestamp(id));
+    }
+
+    _extractTimestamp(id) {
+        return id.shiftRight(23).toNumber();
+    }
 }
 
 module.exports = NextId;
