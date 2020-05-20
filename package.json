@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "scripts": {
-    "lint": "echo \"No linter yet\"",
+    "lint": "eslint . --no-inline-config --ignore-path .gitignore",
     "test": "jasmine --config=jasmine.json",
     "build": "echo \"Build is not needed\""
   },
@@ -22,6 +22,7 @@
   ],
   "homepage": "https://github.com/proficonf/next-id#readme",
   "devDependencies": {
+    "eslint": "^7.0.0",
     "jasmine": "^3.1.0"
   },
   "dependencies": {
