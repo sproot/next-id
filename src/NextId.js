@@ -7,22 +7,23 @@ const Pseudo = require('./Pseudo');
 class NextId {
 
     constructor(id) {
-        const numberId = this._getNumberId(id);
-        const pseudoId = Pseudo.encrypt(numberId);
+        const longNumber = this._getLongNumber(id);
+        const pseudoId = Pseudo.encrypt(longNumber);
+
         this.id = Base62.encode(pseudoId);
-        this.alphanum = Base36.encode(numberId);
-        this.pseudoId = pseudoId;
-        this.numberId = numberId;
-        this.shardId = this._extractShardId(numberId);
-        this.issuedAt = this._extractIssuedAt(numberId);
+        this.alphanumericId = Base36.encode(longNumber);
+        this.pseudoId = pseudoId.toString();
+        this.numericId = longNumber.toString();
+        this.shardId = this._extractShardId(longNumber);
+        this.issuedAt = this._extractIssuedAt(longNumber);
     }
 
     inspect() {
         return {
             id: this.id,
-            alphanum: this.alphanum,
-            pseudoId: this.pseudoId.toString(),
-            numberId: this.numberId.toString(),
+            alphanumericId: this.alphanumericId,
+            pseudoId: this.pseudoId,
+            numericId: this.numericId,
             shardId: this.shardId,
             issuedAt: this.issuedAt,
         };
@@ -32,7 +33,7 @@ class NextId {
         return this.id;
     }
 
-    _getNumberId(id) {
+    _getLongNumber(id) {
         id = id.toString();
         if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
         else if (this._isBase36Encoded(id)) return Base36.decode(id);

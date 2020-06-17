@@ -1,19 +1,17 @@
-const Long = require('long');
-
 const NextIdGenerator = require('../src/NextIdGenerator');
 const NextId = require('../src/NextId');
 
 describe('NextId', () => {
     const ID = '4NDOQTdcN2c';
-    const ALPHANUM = '18NFJ40799O2';
-    const NUMBER_ID = Long.fromString('163250664653193266', true);
-    const PSEUDO_ID = Long.fromString('4029209053283093212', true);
+    const ALPHANUMERIC_ID = '18NFJ40799O2';
+    const NUMBER_ID = '163250664653193266';
+    const PSEUDO_ID = '4029209053283093212';
 
     function assertValidID(id) {
         expect(id.id).toEqual(ID);
-        expect(id.numberId).toEqual(NUMBER_ID);
+        expect(id.numericId).toEqual(NUMBER_ID);
         expect(id.pseudoId).toEqual(PSEUDO_ID);
-        expect(id.alphanum).toEqual(ALPHANUM);
+        expect(id.alphanumericId).toEqual(ALPHANUMERIC_ID);
     }
 
     it('recognizes number id', () => {
@@ -25,7 +23,7 @@ describe('NextId', () => {
     });
 
     it('recognizes base36 encoded id', () => {
-        assertValidID(new NextId(ALPHANUM));
+        assertValidID(new NextId(ALPHANUMERIC_ID));
     });
 
     describe('information extraction', () => {
@@ -41,20 +39,20 @@ describe('NextId', () => {
         });
 
         it('extracts shardId form id value', () => {
-            let numberId = new NextIdGenerator().setShardId(128).generateId();
-            expect(new NextId(numberId).shardId).toBe(128);
+            let numericId = new NextIdGenerator().setShardId(128).generateNumericId();
+            expect(new NextId(numericId).shardId).toBe(128);
 
-            numberId = new NextIdGenerator().setShardId(345).generateId();
-            expect(new NextId(numberId).shardId).toBe(345);
+            numericId = new NextIdGenerator().setShardId(345).generateNumericId();
+            expect(new NextId(numericId).shardId).toBe(345);
 
-            numberId = new NextIdGenerator().setShardId(2455).generateId();
-            expect(new NextId(numberId).shardId).toBe(2455);
+            numericId = new NextIdGenerator().setShardId(2455).generateNumericId();
+            expect(new NextId(numericId).shardId).toBe(2455);
         });
 
         it('extracts issuedAt form id value', () => {
-            const numberId = new NextIdGenerator().generateId();
+            const numericId = new NextIdGenerator().generateNumericId();
             expect(
-                new NextId(numberId).issuedAt.toISOString()
+                new NextId(numericId).issuedAt.toISOString()
             ).toBe(timeNow.toISOString());
         });
     });
