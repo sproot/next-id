@@ -4,7 +4,7 @@ const { getTimestamp, getShardId, getLastTenBits } = require('./support/helpers'
 const NextIdGenerator = require('../src/NextIdGenerator');
 
 describe('NextIdGenerator', () => {
-    const timeNow = new Date();
+    const timeNow = new Date('2020-06-17T20:00:00Z');
     let generator;
 
     beforeEach(() => {
@@ -51,17 +51,17 @@ describe('NextIdGenerator', () => {
         });
 
         it('gets incremented by each nextId() call', () => {
-            generator.generateId();
+            generator.generateNumericId();
             expect(generator.sequence).toBe(1);
-            generator.generateId();
+            generator.generateNumericId();
             expect(generator.sequence).toBe(2);
         });
     });
 
-    describe('generateId()', () => {
+    describe('generateLongNumberId()', () => {
         it ('holds time since epoch in milliseconds as first 41 bits', () => {
             expect(
-                getTimestamp(generator.generateId())
+                getTimestamp(generator.generateLongNumberId())
             ).toEqual(
                 timeNow.getTime() - EPOCH
             );
@@ -69,24 +69,34 @@ describe('NextIdGenerator', () => {
 
         it('uses next 13 bits for shardId giving 8191 possible shards', () => {
             generator.setShardId(8191);
-            expect(getShardId(generator.generateId())).toEqual(8191);
+            expect(getShardId(generator.generateLongNumberId())).toEqual(8191);
 
             generator.setShardId(13);
-            expect(getShardId(generator.generateId())).toEqual(13);
+            expect(getShardId(generator.generateLongNumberId())).toEqual(13);
         });
 
         it('uses last 10 bits as sequential counter', () => {
-            const lastBits = getLastTenBits(generator.generateId());
+            const lastBits = getLastTenBits(generator.generateLongNumberId());
             expect(lastBits).toBeGreaterThan(-1);
             expect(lastBits).toBeLessThan(1024);
         });
     });
 
-    describe('getNextId()', () => {
-        it('wraps generatedId to a NextId instance', () => {
-            spyOn(generator, 'generateId').and.returnValue('GENERATED_ID');
-            generator.getNextId();
-            expect(generator.generateId).toHaveBeenCalled();
+    describe('generateId', () => {
+        it('should generate a regular nextId', () => {
+            expect(generator.generateId()).toMatch(/^[0-9a-zA-Z]{11}$/);
+        });
+    });
+
+    describe('generateNumericId', () => {
+        it('should generate nextId in the numeric format', () => {
+            expect(generator.generateNumericId()).toMatch(/^[0-9]{18}$/);
+        });
+    });
+
+    describe('generateAlphanumericId', () => {
+        it('should generate nextId in the alphanumeric format', () => {
+            expect(generator.generateAlphanumericId()).toMatch(/^[0-9A-Z]{12}$/);
         });
     });
 });

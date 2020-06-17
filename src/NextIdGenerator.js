@@ -21,7 +21,7 @@ class NextIdGenerator {
         return this._shardId;
     }
 
-    generateId() {
+    generateLongNumberId() {
         let result = Long.fromNumber(new Date().getTime() - EPOCH, true);
         result = result.shiftLeft(23);
         result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
@@ -30,8 +30,31 @@ class NextIdGenerator {
         return result;
     }
 
-    getNextId() {
-        return new NextId(this.generateId());
+    generateNumericId() {
+        return new NextId(this.generateLongNumberId()).numericId;
+    }
+
+    generateAlphanumericId() {
+        return new NextId(this.generateLongNumberId()).alphanumericId;
+    }
+
+    generateId() {
+        return new NextId(this.generateLongNumberId()).id;
+    }
+
+    generate({ format } = {}) {
+        switch(format) {
+            case 'numeric':
+                return this.generateNumericId();
+            case 'alphanumeric':
+                return this.generateAlphanumericId();
+            default:
+                return this.generateId();
+        }
+    }
+
+    inspect(id) {
+        return new NextId(id).inspect();
     }
 }
 
