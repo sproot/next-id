@@ -40,11 +40,11 @@ class NextId {
     }
 
     _isBase62Encoded(id) {
-        return id.length <= 11;
+        return id.match(/^[0-9A-Za-z]{0,11}$/);
     }
 
     _isBase36Encoded(id) {
-        return id.length > 11 && id.length <= 13;
+        return Boolean(id.match(/^[0-9A-Z]{11,13}$/));
     }
 
     _extractShardId(id) {

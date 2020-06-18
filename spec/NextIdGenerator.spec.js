@@ -2,6 +2,7 @@ const EPOCH = require('../config/EPOCH');
 const { getTimestamp, getShardId, getLastTenBits } = require('./support/helpers');
 
 const NextIdGenerator = require('../src/NextIdGenerator');
+const NextId = require('../src/NextId');
 
 describe('NextIdGenerator', () => {
     const timeNow = new Date('2020-06-17T20:00:00Z');
@@ -129,6 +130,13 @@ describe('NextIdGenerator', () => {
 
             expect(generator.generate({ format: 'alphanumeric' })).toBe(id);
             expect(generator.generateAlphanumericId).toHaveBeenCalled();
+        });
+    });
+
+    describe('inspect', () => {
+        it('returns useful information about ID', () => {
+            const id = generator.generate();
+            expect(generator.inspect(id)).toEqual(new NextId(id).inspect());
         });
     });
 });
