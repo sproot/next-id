@@ -2,6 +2,12 @@ const NextIdGenerator = require('./src/NextIdGenerator');
 
 const generator = new NextIdGenerator();
 
+if(process.env.NEXT_ID_SHARD_ID !== undefined) {
+    generator.setShardId(
+        Number(process.env.NEXT_ID_SHARD_ID)
+    );
+}
+
 function generate(options) {
     return generator.generate(options);
 }
