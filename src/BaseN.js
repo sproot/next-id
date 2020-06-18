@@ -2,7 +2,7 @@ const Long = require('long');
 
 class BaseN {
     static get ALPHABET() {
-        return '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        return '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     }
 
     static get base() {

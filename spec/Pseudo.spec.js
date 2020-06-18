@@ -23,7 +23,7 @@ describe('Pseudo', () => {
     });
 
     describe('static decrypt(number)', () => {
-        it('is self revertable', () => {
+        it('is self reversible', () => {
             expect(Pseudo.decrypt(Pseudo.encrypt(1)).toNumber()).toBe(1);
             expect(Pseudo.decrypt(Pseudo.encrypt(2)).toNumber()).toBe(2);
             expect(Pseudo.decrypt(Pseudo.encrypt(3)).toNumber()).toBe(3);

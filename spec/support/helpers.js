@@ -17,7 +17,7 @@ function getShardId(id) {
 }
 
 function getLastTenBits(id) {
-    return id.and(Long.ONE.shiftLeft(countShift)-Long.ONE);
+    return id.and(Long.ONE.shiftLeft(countShift)-Long.ONE).toNumber();
 }
 
 module.exports = {

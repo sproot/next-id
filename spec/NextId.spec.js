@@ -57,6 +57,20 @@ describe('NextId', () => {
         });
     });
 
+    describe('inspect()', () => {
+        it('returns all useful information in object form', () => {
+            const nextId = new NextId(ID);
+            expect(nextId.inspect()).toEqual({
+                id: nextId.id,
+                alphanumericId: nextId.alphanumericId,
+                pseudoId: nextId.pseudoId,
+                numericId: nextId.numericId,
+                shardId: nextId.shardId,
+                issuedAt: nextId.issuedAt,
+            });
+        });
+    });
+
     describe('toString()', () => {
         it('it return id value', () => {
             const id = new NextId(ID);

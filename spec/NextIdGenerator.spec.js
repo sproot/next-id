@@ -75,10 +75,17 @@ describe('NextIdGenerator', () => {
             expect(getShardId(generator.generateLongNumberId())).toEqual(13);
         });
 
-        it('uses last 10 bits as sequential counter', () => {
+        it('uses last 10 bits as sequential counter in range of [0..1023]', () => {
             const lastBits = getLastTenBits(generator.generateLongNumberId());
-            expect(lastBits).toBeGreaterThan(-1);
-            expect(lastBits).toBeLessThan(1024);
+            expect(lastBits).toBeGreaterThanOrEqual(0);
+            expect(lastBits).toBeLessThanOrEqual(1023);
+        });
+
+        it('increments a sequential counter each usage at the same millisecond', () => {
+            expect(getLastTenBits(generator.generateLongNumberId())).toBe(0);
+            expect(getLastTenBits(generator.generateLongNumberId())).toBe(1);
+            expect(getLastTenBits(generator.generateLongNumberId())).toBe(2);
+            expect(getLastTenBits(generator.generateLongNumberId())).toBe(3);
         });
     });
 
@@ -97,6 +104,31 @@ describe('NextIdGenerator', () => {
     describe('generateAlphanumericId', () => {
         it('should generate nextId in the alphanumeric format', () => {
             expect(generator.generateAlphanumericId()).toMatch(/^[0-9A-Z]{12}$/);
+        });
+    });
+
+    describe('generate', () => {
+        const id = { stub: true };
+
+        it('generates regular id by default', () => {
+            spyOn(generator, 'generateId').and.returnValue(id);
+
+            expect(generator.generate()).toBe(id);
+            expect(generator.generateId).toHaveBeenCalled();
+        });
+
+        it('can generate id in numeric format', () => {
+            spyOn(generator, 'generateNumericId').and.returnValue(id);
+
+            expect(generator.generate({ format: 'numeric' })).toBe(id);
+            expect(generator.generateNumericId).toHaveBeenCalled();
+        });
+
+        it('can generate id in alphanumeric format', () => {
+            spyOn(generator, 'generateAlphanumericId').and.returnValue(id);
+
+            expect(generator.generate({ format: 'alphanumeric' })).toBe(id);
+            expect(generator.generateAlphanumericId).toHaveBeenCalled();
         });
     });
 });
