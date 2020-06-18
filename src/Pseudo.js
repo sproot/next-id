@@ -1,29 +1,21 @@
-const Long = require('long');
-
 class Pseudo {
     static encrypt(number) {
-        switch(typeof number) {
-            case 'number':
-                number = Long.fromNumber(number);
-                break;
-            case 'string':
-                number = Long.fromString(number, true);
-                break;
-        }
+        number = BigInt(number);
 
-        const BITMASK = Long.fromNumber(4294967295);
+        const BITMASK = 4294967295n;
         let l1, l2, r1, r2;
-        l1 = number.shiftRight(32).and(BITMASK);
-        r1 = number.and(BITMASK);
+        l1 = (number >> 32n) & BITMASK;
+        r1 = number & BITMASK;
         for(let i=0; i<3; i++) {
             l2 = r1;
-            r2 = l1.xor(Math.round(
-                ((1366.0 * r1 + 150889) % 714025 / 714025.0) * (32767*32767)
+            r2 = l1 ^ BigInt(Math.round(
+                (((1366.0 * Number(r1) + 150889) % 714025) / 714025.0) * (32767 * 32767)
             ));
             l1 = l2;
             r1 = r2;
         }
-        return r1.shiftLeft(32).add(l1);
+
+        return (r1 << 32n) + l1;
     }
 
     static decrypt(number) {

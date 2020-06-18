@@ -58,10 +58,10 @@ describe('NextIdGenerator', () => {
         });
     });
 
-    describe('generateLongNumberId()', () => {
+    describe('generateBigIntId()', () => {
         it ('holds time since epoch in milliseconds as first 41 bits', () => {
             expect(
-                getTimestamp(generator.generateLongNumberId())
+                getTimestamp(generator.generateBigIntId())
             ).toEqual(
                 timeNow.getTime() - EPOCH
             );
@@ -69,23 +69,23 @@ describe('NextIdGenerator', () => {
 
         it('uses next 13 bits for shardId giving 8191 possible shards', () => {
             generator.setShardId(8191);
-            expect(getShardId(generator.generateLongNumberId())).toEqual(8191);
+            expect(getShardId(generator.generateBigIntId())).toEqual(8191);
 
             generator.setShardId(13);
-            expect(getShardId(generator.generateLongNumberId())).toEqual(13);
+            expect(getShardId(generator.generateBigIntId())).toEqual(13);
         });
 
         it('uses last 10 bits as sequential counter in range of [0..1023]', () => {
-            const lastBits = getLastTenBits(generator.generateLongNumberId());
+            const lastBits = getLastTenBits(generator.generateBigIntId());
             expect(lastBits).toBeGreaterThanOrEqual(0);
             expect(lastBits).toBeLessThanOrEqual(1023);
         });
 
         it('increments a sequential counter each usage at the same millisecond', () => {
-            expect(getLastTenBits(generator.generateLongNumberId())).toBe(0);
-            expect(getLastTenBits(generator.generateLongNumberId())).toBe(1);
-            expect(getLastTenBits(generator.generateLongNumberId())).toBe(2);
-            expect(getLastTenBits(generator.generateLongNumberId())).toBe(3);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(0);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(1);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(2);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(3);
         });
     });
 

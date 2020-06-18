@@ -1,5 +1,4 @@
 const EPOCH = require('../config/EPOCH');
-const Long = require('long');
 const Base62 = require('./Base62');
 const Base36 = require('./Base36');
 const Pseudo = require('./Pseudo');
@@ -7,15 +6,15 @@ const Pseudo = require('./Pseudo');
 class NextId {
 
     constructor(id) {
-        const longNumber = this._getLongNumber(id);
-        const pseudoId = Pseudo.encrypt(longNumber);
+        const bigInt = this._getBigInt(id);
+        const pseudoId = Pseudo.encrypt(bigInt);
 
         this.id = Base62.encode(pseudoId);
-        this.alphanumericId = Base36.encode(longNumber);
+        this.alphanumericId = Base36.encode(bigInt);
         this.pseudoId = pseudoId.toString();
-        this.numericId = longNumber.toString();
-        this.shardId = this._extractShardId(longNumber);
-        this.issuedAt = this._extractIssuedAt(longNumber);
+        this.numericId = bigInt.toString();
+        this.shardId = this._extractShardId(bigInt);
+        this.issuedAt = this._extractIssuedAt(bigInt);
     }
 
     inspect() {
@@ -33,11 +32,11 @@ class NextId {
         return this.id;
     }
 
-    _getLongNumber(id) {
+    _getBigInt(id) {
         id = id.toString();
         if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
         else if (this._isBase36Encoded(id)) return Base36.decode(id);
-        else return Long.fromString(id, true);
+        else return BigInt(id);
     }
 
     _isBase62Encoded(id) {
@@ -49,9 +48,9 @@ class NextId {
     }
 
     _extractShardId(id) {
-        return id.xor(
-            id.shiftRight(23).shiftLeft(23)
-        ).shiftRight(10).toNumber();
+        return Number(
+            ( id ^ ( (id >> 23n) << 23n ) ) >> 10n
+        );
     }
 
     _extractIssuedAt(id) {
@@ -59,7 +58,7 @@ class NextId {
     }
 
     _extractTimestamp(id) {
-        return id.shiftRight(23).toNumber();
+        return Number(id >> 23n);
     }
 }
 
