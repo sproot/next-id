@@ -1,4 +1,4 @@
-const EPOCH = require('../config/epoch');
+const EPOCH = require('../config/EPOCH');
 const { getTimestamp, getShardId, getLastTenBits } = require('./support/helpers');
 
 const NextIdGenerator = require('../src/NextIdGenerator');

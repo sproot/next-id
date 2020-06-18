@@ -1,4 +1,4 @@
-const EPOCH = require('../config/epoch');
+const EPOCH = require('../config/EPOCH');
 const Long = require('long');
 const Base62 = require('./Base62');
 const Base36 = require('./Base36');

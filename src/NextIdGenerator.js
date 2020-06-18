@@ -1,5 +1,5 @@
 const Long = require('long');
-const EPOCH = require('../config/epoch');
+const EPOCH = require('../config/EPOCH');
 const NextId = require('./NextId');
 
 class NextIdGenerator {
