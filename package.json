@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --no-inline-config --ignore-path .gitignore",
-    "test": "jasmine --config=jasmine.json",
+    "test": "jasmine --config=spec/support/jasmine.json",
     "build": "echo \"Build is not needed\""
   },
   "repository": {
@@ -22,11 +22,15 @@
   ],
   "homepage": "https://github.com/proficonf/next-id#readme",
   "devDependencies": {
+    "@stryker-mutator/core": "^3.3.0",
+    "@stryker-mutator/jasmine-framework": "^3.3.0",
+    "@stryker-mutator/jasmine-runner": "^3.3.0",
+    "@stryker-mutator/javascript-mutator": "^3.3.0",
     "eslint": "^7.0.0",
     "jasmine": "^3.1.0"
   },
   "dependencies": {
-    "long": "^4.0.0"
+    "long": "4.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
