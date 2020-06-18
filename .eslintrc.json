@@ -7,7 +7,8 @@
     },
     "extends": "eslint:recommended",
     "globals": {
-        "expectAsync": true
+        "expectAsync": true,
+        "BigInt": true
     },
     "parserOptions": {
         "ecmaVersion": 11
