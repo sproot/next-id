@@ -40,7 +40,7 @@ class NextId {
     }
 
     _isBase62Encoded(id) {
-        return id.match(/^[0-9A-Za-z]{0,11}$/);
+        return Boolean(id.match(/^[0-9A-Za-z]{0,11}$/));
     }
 
     _isBase36Encoded(id) {
