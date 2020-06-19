@@ -22,12 +22,12 @@
   ],
   "homepage": "https://github.com/proficonf/next-id#readme",
   "devDependencies": {
-    "@stryker-mutator/core": "^3.3.0",
-    "@stryker-mutator/jasmine-framework": "^3.3.0",
-    "@stryker-mutator/jasmine-runner": "^3.3.0",
-    "@stryker-mutator/javascript-mutator": "^3.3.0",
-    "eslint": "^7.0.0",
-    "jasmine": "^3.1.0"
+    "@stryker-mutator/core": "3.3.0",
+    "@stryker-mutator/jasmine-framework": "3.3.0",
+    "@stryker-mutator/jasmine-runner": "3.3.0",
+    "@stryker-mutator/javascript-mutator": "3.3.0",
+    "eslint": "7.0.0",
+    "jasmine": "3.5.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

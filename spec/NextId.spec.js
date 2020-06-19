@@ -27,7 +27,7 @@ describe('NextId', () => {
     });
 
     describe('information extraction', () => {
-        const timeNow = new Date();
+        const timeNow = new Date('2056-08-16T17:05:04.123Z');
 
         beforeEach(() => {
             jasmine.clock().install();
