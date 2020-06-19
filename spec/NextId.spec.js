@@ -39,14 +39,32 @@ describe('NextId', () => {
         });
 
         it('extracts shardId form id value', () => {
-            let numericId = new NextIdGenerator().setShardId(128).generateNumericId();
-            expect(new NextId(numericId).shardId).toBe(128);
+            let shardId = 128;
+            expect(
+                new NextId(
+                    new NextIdGenerator()
+                        .setShardId(shardId)
+                        .generateNumericId()
+                ).shardId
+            ).toBe(shardId);
 
-            numericId = new NextIdGenerator().setShardId(345).generateNumericId();
-            expect(new NextId(numericId).shardId).toBe(345);
+            shardId = 345;
+            expect(
+                new NextId(
+                    new NextIdGenerator()
+                        .setShardId(shardId)
+                        .generateNumericId()
+                ).shardId
+            ).toBe(shardId);
 
-            numericId = new NextIdGenerator().setShardId(2455).generateNumericId();
-            expect(new NextId(numericId).shardId).toBe(2455);
+            shardId = 2455;
+            expect(
+                new NextId(
+                    new NextIdGenerator()
+                        .setShardId(shardId)
+                        .generateNumericId()
+                ).shardId
+            ).toBe(shardId);
         });
 
         it('extracts issuedAt form id value', () => {
