@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint . --no-inline-config --ignore-path .gitignore",
     "test": "jasmine --config=spec/support/jasmine.json",
-    "build": "echo \"Build is not needed\""
+    "build": "echo \"Build is not needed\"",
+    "mutation-test": "stryker run"
   },
   "repository": {
     "type": "git",
