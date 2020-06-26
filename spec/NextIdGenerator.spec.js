@@ -1,10 +1,11 @@
-const EPOCH = require('../config/epoch');
+const EPOCH = require('../config/EPOCH');
 const { getTimestamp, getShardId, getLastTenBits } = require('./support/helpers');
 
 const NextIdGenerator = require('../src/NextIdGenerator');
+const NextId = require('../src/NextId');
 
 describe('NextIdGenerator', () => {
-    const timeNow = new Date();
+    const timeNow = new Date('2020-06-17T20:00:00Z');
     let generator;
 
     beforeEach(() => {
@@ -51,17 +52,17 @@ describe('NextIdGenerator', () => {
         });
 
         it('gets incremented by each nextId() call', () => {
-            generator.generateId();
+            generator.generateNumericId();
             expect(generator.sequence).toBe(1);
-            generator.generateId();
+            generator.generateNumericId();
             expect(generator.sequence).toBe(2);
         });
     });
 
-    describe('generateId()', () => {
+    describe('generateBigIntId()', () => {
         it ('holds time since epoch in milliseconds as first 41 bits', () => {
             expect(
-                getTimestamp(generator.generateId())
+                getTimestamp(generator.generateBigIntId())
             ).toEqual(
                 timeNow.getTime() - EPOCH
             );
@@ -69,24 +70,73 @@ describe('NextIdGenerator', () => {
 
         it('uses next 13 bits for shardId giving 8191 possible shards', () => {
             generator.setShardId(8191);
-            expect(getShardId(generator.generateId())).toEqual(8191);
+            expect(getShardId(generator.generateBigIntId())).toEqual(8191);
 
             generator.setShardId(13);
-            expect(getShardId(generator.generateId())).toEqual(13);
+            expect(getShardId(generator.generateBigIntId())).toEqual(13);
         });
 
-        it('uses last 10 bits as sequential counter', () => {
-            const lastBits = getLastTenBits(generator.generateId());
-            expect(lastBits).toBeGreaterThan(-1);
-            expect(lastBits).toBeLessThan(1024);
+        it('uses last 10 bits as sequential counter in range of [0..1023]', () => {
+            const lastBits = getLastTenBits(generator.generateBigIntId());
+            expect(lastBits).toBeGreaterThanOrEqual(0);
+            expect(lastBits).toBeLessThanOrEqual(1023);
+        });
+
+        it('increments a sequential counter each usage at the same millisecond', () => {
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(0);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(1);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(2);
+            expect(getLastTenBits(generator.generateBigIntId())).toBe(3);
         });
     });
 
-    describe('getNextId()', () => {
-        it('wraps generatedId to a NextId instance', () => {
-            spyOn(generator, 'generateId').and.returnValue('GENERATED_ID');
-            generator.getNextId();
+    describe('generateId', () => {
+        it('should generate a regular nextId', () => {
+            expect(generator.generateId()).toMatch(/^[0-9a-zA-Z]{11}$/);
+        });
+    });
+
+    describe('generateNumericId', () => {
+        it('should generate nextId in the numeric format', () => {
+            expect(generator.generateNumericId()).toMatch(/^[0-9]{18}$/);
+        });
+    });
+
+    describe('generateAlphanumericId', () => {
+        it('should generate nextId in the alphanumeric format', () => {
+            expect(generator.generateAlphanumericId()).toMatch(/^[0-9A-Z]{12}$/);
+        });
+    });
+
+    describe('generate', () => {
+        const id = { stub: true };
+
+        it('generates regular id by default', () => {
+            spyOn(generator, 'generateId').and.returnValue(id);
+
+            expect(generator.generate()).toBe(id);
             expect(generator.generateId).toHaveBeenCalled();
+        });
+
+        it('can generate id in numeric format', () => {
+            spyOn(generator, 'generateNumericId').and.returnValue(id);
+
+            expect(generator.generate({ format: 'numeric' })).toBe(id);
+            expect(generator.generateNumericId).toHaveBeenCalled();
+        });
+
+        it('can generate id in alphanumeric format', () => {
+            spyOn(generator, 'generateAlphanumericId').and.returnValue(id);
+
+            expect(generator.generate({ format: 'alphanumeric' })).toBe(id);
+            expect(generator.generateAlphanumericId).toHaveBeenCalled();
+        });
+    });
+
+    describe('inspect', () => {
+        it('returns useful information about ID', () => {
+            const id = generator.generate();
+            expect(generator.inspect(id)).toEqual(new NextId(id).inspect());
         });
     });
 });

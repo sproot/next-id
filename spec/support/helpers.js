@@ -1,23 +1,19 @@
-const Long = require('long');
-
-// 64 bits total, 41 occupied by timestamp
-const timeShift = 64-41;
-
-// last 10 bits used for counter value from 0 to 1023
-const countShift = 10;
-
 function getTimestamp(id) {
-    return id.shiftRight(timeShift).toNumber();
+    // 64-41 => 23, 64 bits total, 41 occupied by timestamp
+    return Number(id >> 23n);
 }
 
 function getShardId(id) {
-    return id.xor(
-        id.shiftRight(timeShift).shiftLeft(timeShift)
-    ).shiftRight(countShift).toNumber();
+    return Number(
+        ( id ^ ( ( id >> 23n ) << 23n ) ) >> 10n
+    );
 }
 
 function getLastTenBits(id) {
-    return id.and(Long.ONE.shiftLeft(countShift)-Long.ONE);
+    // last 10 bits used for counter value from 0 to 1023
+    return Number(
+        id & ((1n << 10n) - 1n)
+    );
 }
 
 module.exports = {

@@ -1,5 +1,4 @@
-const EPOCH = require('../config/epoch');
-const Long = require('long');
+const EPOCH = require('../config/EPOCH');
 const Base62 = require('./Base62');
 const Base36 = require('./Base36');
 const Pseudo = require('./Pseudo');
@@ -7,22 +6,23 @@ const Pseudo = require('./Pseudo');
 class NextId {
 
     constructor(id) {
-        const numberId = this._getNumberId(id);
-        const pseudoId = Pseudo.encrypt(numberId);
+        const bigInt = this._getBigInt(id);
+        const pseudoId = Pseudo.encrypt(bigInt);
+
         this.id = Base62.encode(pseudoId);
-        this.alphanum = Base36.encode(numberId);
-        this.pseudoId = pseudoId;
-        this.numberId = numberId;
-        this.shardId = this._extractShardId(numberId);
-        this.issuedAt = this._extractIssuedAt(numberId);
+        this.alphanumericId = Base36.encode(bigInt);
+        this.pseudoId = pseudoId.toString();
+        this.numericId = bigInt.toString();
+        this.shardId = this._extractShardId(bigInt);
+        this.issuedAt = this._extractIssuedAt(bigInt);
     }
 
     inspect() {
         return {
             id: this.id,
-            alphanum: this.alphanum,
-            pseudoId: this.pseudoId.toString(),
-            numberId: this.numberId.toString(),
+            alphanumericId: this.alphanumericId,
+            pseudoId: this.pseudoId,
+            numericId: this.numericId,
             shardId: this.shardId,
             issuedAt: this.issuedAt,
         };
@@ -32,25 +32,25 @@ class NextId {
         return this.id;
     }
 
-    _getNumberId(id) {
+    _getBigInt(id) {
         id = id.toString();
         if (this._isBase62Encoded(id)) return Pseudo.decrypt(Base62.decode(id));
         else if (this._isBase36Encoded(id)) return Base36.decode(id);
-        else return Long.fromString(id, true);
+        else return BigInt(id);
     }
 
     _isBase62Encoded(id) {
-        return id.length <= 11;
+        return Boolean(id.match(/^[0-9A-Za-z]{0,11}$/));
     }
 
     _isBase36Encoded(id) {
-        return id.length > 11 && id.length <= 13;
+        return Boolean(id.match(/^[0-9A-Z]{11,13}$/));
     }
 
     _extractShardId(id) {
-        return id.xor(
-            id.shiftRight(23).shiftLeft(23)
-        ).shiftRight(10).toNumber();
+        return Number(
+            ( id ^ ( (id >> 23n) << 23n ) ) >> 10n
+        );
     }
 
     _extractIssuedAt(id) {
@@ -58,7 +58,7 @@ class NextId {
     }
 
     _extractTimestamp(id) {
-        return id.shiftRight(23).toNumber();
+        return Number(id >> 23n);
     }
 }
 

@@ -23,30 +23,26 @@ describe('Base62', () => {
 
         it('encodes 64 bit numbers as 11 digit value', () => {
             // 2**63 => min 64 bit number
-            expect(Base62.encode('9223372036854775808').length).toBe(11);
+            expect(Base62.encode(9223372036854775808n).length).toBe(11);
             // 2**64-1 => max 64 bit number
-            expect(Base62.encode('18446744073709551615').length).toBe(11);
+            expect(Base62.encode(18446744073709551615n).length).toBe(11);
         });
     });
 
     describe('decode(number)', () => {
         it('decodes single char string', () => {
-            expect(Base62.decode('0').toNumber()).toEqual(0);
-            expect(Base62.decode('1').toNumber()).toEqual(1);
-            expect(Base62.decode('a').toNumber()).toEqual(10);
-            expect(Base62.decode('A').toNumber()).toEqual(36);
-            expect(Base62.decode('Z').toNumber()).toEqual(61);
+            expect(Base62.decode('0')).toEqual(0n);
+            expect(Base62.decode('1')).toEqual(1n);
+            expect(Base62.decode('a')).toEqual(10n);
+            expect(Base62.decode('A')).toEqual(36n);
+            expect(Base62.decode('Z')).toEqual(61n);
         });
 
         it('decodes complicated strings', () => {
-            expect(Base62.decode('100').toNumber()).toEqual(3844);
-            expect(Base62.decode('ZZZ').toNumber()).toEqual(238327);
-            expect(Base62.decode('aZl8N0y58M7').toString()).toEqual(
-                '9223372036854775807'
-            );
-            expect(Base62.decode('lYGhA16ahyf').toString()).toEqual(
-                '18446744073709551615'
-            );
+            expect(Base62.decode('100')).toEqual(3844n);
+            expect(Base62.decode('ZZZ')).toEqual(238327n);
+            expect(Base62.decode('aZl8N0y58M7')).toEqual(9223372036854775807n);
+            expect(Base62.decode('lYGhA16ahyf')).toEqual(18446744073709551615n);
         });
     });
 });

@@ -1,5 +1,4 @@
-const Long = require('long');
-const EPOCH = require('../config/epoch');
+const EPOCH = require('../config/EPOCH');
 const NextId = require('./NextId');
 
 class NextIdGenerator {
@@ -21,17 +20,40 @@ class NextIdGenerator {
         return this._shardId;
     }
 
-    generateId() {
-        let result = Long.fromNumber(new Date().getTime() - EPOCH, true);
-        result = result.shiftLeft(23);
-        result = result.or(Long.fromNumber(this.shardId).shiftLeft(10));
-        result = result.or(Long.fromNumber(this.sequence % 1024));
+    generateBigIntId() {
+        let result = BigInt(new Date().getTime() - EPOCH);
+        result = result << 23n;
+        result = result | (BigInt(this.shardId) << 10n);
+        result = result | (BigInt(this.sequence % 1024));
         this.sequence++;
         return result;
     }
 
-    getNextId() {
-        return new NextId(this.generateId());
+    generateNumericId() {
+        return new NextId(this.generateBigIntId()).numericId;
+    }
+
+    generateAlphanumericId() {
+        return new NextId(this.generateBigIntId()).alphanumericId;
+    }
+
+    generateId() {
+        return new NextId(this.generateBigIntId()).id;
+    }
+
+    generate({ format } = {}) {
+        switch(format) {
+            case 'numeric':
+                return this.generateNumericId();
+            case 'alphanumeric':
+                return this.generateAlphanumericId();
+            default:
+                return this.generateId();
+        }
+    }
+
+    inspect(id) {
+        return new NextId(id).inspect();
     }
 }
 
