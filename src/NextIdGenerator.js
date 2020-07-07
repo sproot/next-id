@@ -8,8 +8,8 @@ class NextIdGenerator {
     }
 
     setShardId(shardId) {
-        if(typeof shardId !== 'number') throw new TypeError();
-        if(shardId < 1 || shardId > 8191)
+        if(!Number.isInteger(shardId)) throw new TypeError();
+        if(shardId < 0 || shardId > 8191)
             throw new RangeError();
         this._shardId = shardId;
         return this;
