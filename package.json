@@ -1,6 +1,6 @@
 {
   "name": "@proficonf/next-id",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Short uniq id generator",
   "license": "UNLICENSED",
   "main": "index.js",
