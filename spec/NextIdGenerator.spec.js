@@ -24,23 +24,28 @@ describe('NextIdGenerator', () => {
         });
 
         it('sets the shardId', () => {
-            expect(generator.setShardId(1)).toBe(generator);
+            expect(generator.setShardId(0)).toBe(generator);
+            expect(generator.shardId).toEqual(0);
+            generator.setShardId(1);
             expect(generator.shardId).toEqual(1);
         });
 
         describe('throws an Error exception', () => {
-            it('when value is not integer', () => {
+            it('when value is not an integer', () => {
                 expect(() => generator.setShardId('String')).toThrowError(TypeError);
                 expect(() => generator.setShardId({})).toThrowError(TypeError);
                 expect(() => generator.setShardId([])).toThrowError(TypeError);
                 expect(() => generator.setShardId(null)).toThrowError(TypeError);
+                expect(() => generator.setShardId(undefined)).toThrowError(TypeError);
+                expect(() => generator.setShardId(0.2)).toThrowError(TypeError);
+                expect(() => generator.setShardId(Infinity)).toThrowError(TypeError);
             });
 
-            it('when value undeflows 1', () => {
-                expect(() => generator.setShardId(0)).toThrowError(RangeError);
+            it('when value is less than 0', () => {
+                expect(() => generator.setShardId(-1)).toThrowError(RangeError);
             });
 
-            it('when value overflows 8191', () => {
+            it('when value is greater than 8191', () => {
                 expect(() => generator.setShardId(8192)).toThrowError(RangeError);
             });
         });
