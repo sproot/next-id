@@ -4,6 +4,7 @@
   "description": "Short unique ID generator",
   "license": "UNLICENSED",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test": "jasmine --config=spec/support/jasmine.json",
