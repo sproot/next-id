@@ -2,7 +2,12 @@ const NextIdGenerator = require('./src/NextIdGenerator');
 
 const generator = new NextIdGenerator();
 
-if(process.env.NEXT_ID_SHARD_ID !== undefined) {
+function isBrowser() {
+    return typeof window !== 'undefined' &&
+        typeof window.document !== 'undefined';
+}
+
+if(!isBrowser() && process.env.NEXT_ID_SHARD_ID !== undefined) {
     generator.setShardId(
         Number(process.env.NEXT_ID_SHARD_ID)
     );
