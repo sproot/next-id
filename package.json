@@ -1,34 +1,32 @@
 {
-  "name": "@proficonf/next-id",
-  "version": "2.0.2",
-  "description": "Short uniq id generator",
+  "name": "@sproot/next-id",
+  "version": "2.1.0",
+  "description": "Short unique ID generator",
   "license": "UNLICENSED",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "lint": "eslint . --no-inline-config --ignore-path .gitignore",
+    "lint": "eslint .",
     "test": "jasmine --config=spec/support/jasmine.json",
     "build": "echo \"Build is not needed\"",
     "mutation-test": "stryker run"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/proficonf/next-id.git"
+    "url": "git+https://github.com/sproot/next-id.git"
   },
   "keywords": [
-    "Proficonf",
     "short",
     "uniq",
     "ID",
     "generator"
   ],
-  "homepage": "https://github.com/proficonf/next-id#readme",
+  "homepage": "https://github.com/sproot/next-id#readme",
   "devDependencies": {
-    "@stryker-mutator/core": "3.3.0",
-    "@stryker-mutator/jasmine-framework": "3.3.0",
-    "@stryker-mutator/jasmine-runner": "3.3.0",
-    "@stryker-mutator/javascript-mutator": "3.3.0",
-    "eslint": "7.0.0",
-    "jasmine": "3.5.0"
+    "@stryker-mutator/core": "8.7.1",
+    "@stryker-mutator/jasmine-runner": "8.7.1",
+    "eslint": "9.26.0",
+    "jasmine": "5.7.1"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

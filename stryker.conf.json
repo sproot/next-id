@@ -1,13 +1,6 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "mutator": "javascript",
   "packageManager": "npm",
-  "files": [
-    "*",
-    "config/{,**}/*",
-    "src/{,**}/*",
-    "spec/{,**}/*"
-  ],
   "mutate": [
     "src/{,**}/*.js"
   ],
@@ -17,8 +10,6 @@
     "progress"
   ],
   "testRunner": "jasmine",
-  "transpilers": [],
-  "testFramework": "jasmine",
   "coverageAnalysis": "perTest",
   "jasmineConfigFile": "spec/support/jasmine.json"
 }
