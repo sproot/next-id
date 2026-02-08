@@ -1,13 +1,13 @@
-# @sproot/next-id
+# next-id
 
 This package generates unique, short and random-looking IDs based on timestamp, shardId and some sequence.
 
 ## Installation
 
 ```bash
-npm install @sproot/next-id
+npm install next-id
 # or
-yarn add @sproot/next-id
+yarn add next-id
 ```
 
 ## Algorithm
@@ -31,7 +31,7 @@ NextId supports multiple representation formats:
 
 ### CommonJS
 ```js
-const nextId = require('@sproot/next-id');
+const nextId = require('next-id');
 nextId(); //=> '4DTZX5Q7czS'
 ```
 
@@ -40,10 +40,10 @@ If you use ES modules:
 
 ```js
 // Using require with destructuring
-const { generate, setShardId, inspect } = require('@sproot/next-id');
+const { generate, setShardId, inspect } = require('next-id');
 
 // Using dynamic import
-const nextId = await import('@sproot/next-id').then(m => m.default);
+const nextId = await import('next-id').then(m => m.default);
 ```
 
 You can also use a more explicit approach:

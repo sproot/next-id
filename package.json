@@ -1,10 +1,15 @@
 {
-  "name": "@sproot/next-id",
-  "version": "2.1.0",
+  "name": "next-id",
+  "version": "2.2.0",
   "description": "Short unique ID generator",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "index.js",
   "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/"
+  ],
   "scripts": {
     "lint": "eslint .",
     "test": "jasmine --config=spec/support/jasmine.json",
@@ -22,6 +27,9 @@
     "generator"
   ],
   "homepage": "https://github.com/sproot/next-id#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "@stryker-mutator/core": "8.7.1",
     "@stryker-mutator/jasmine-runner": "8.7.1",
@@ -29,6 +37,6 @@
     "jasmine": "5.7.1"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public"
   }
 }
